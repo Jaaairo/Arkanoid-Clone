@@ -302,6 +302,7 @@ MonoBehaviour:
   countTxt: {fileID: 1292184985}
   shiftTxt: {fileID: 1682090813}
   shiftCount: 0
+  scaleChange: {x: 0.005, y: 0.005, z: 0.005}
 --- !u!4 &744537574
 Transform:
   m_ObjectHideFlags: 0

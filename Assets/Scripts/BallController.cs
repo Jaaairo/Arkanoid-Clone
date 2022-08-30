@@ -6,10 +6,10 @@ using System;
 using Random = UnityEngine.Random;
 public class BallController : MonoBehaviour
 {
-    public GameObject ball;
+
     public TrailRenderer ballTrail;
 
-    public Action<BallController> onDeath;
+    public event Action<BallController> onDeath; //Action é um delegate (evento)
     
     //limite da tela
     private Vector2 screenBounds;
@@ -17,8 +17,8 @@ public class BallController : MonoBehaviour
     private float ballH;
     Vector3 viewPos;
 
-    public float FinalSpeed=>speed * ballSpeedMulti; //Atributo
-    public float speed = 5;
+    public float FinalSpeed=>speed * ballSpeedMulti; //Atributo, quando chamado faz o cálculo e retorna o valor
+    public float speed = 5f;
     Vector2 direction;
     float radius;
     float startSpd ;
@@ -49,9 +49,9 @@ public class BallController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        viewPos = transform.position;
+        viewPos = transform.position;       
         viewPos.x = Mathf.Clamp(viewPos.x, -screenBounds.x + ballW / 2, screenBounds.x - ballW / 2);
-        viewPos.y = Mathf.Clamp(viewPos.y, -screenBounds.y + ballH / 2, screenBounds.y - ballH / 2);
+        viewPos.y = Mathf.Clamp(viewPos.y, -screenBounds.y + ballH / 2, screenBounds.y - ballH / 2);       
         transform.position = viewPos;
 
         transform.Translate(direction * FinalSpeed * Time.deltaTime);
@@ -61,22 +61,20 @@ public class BallController : MonoBehaviour
 
     private void ballBounce() {
 
-        var topLeft = (Vector2) Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight,Camera.main.nearClipPlane));
-        var bottomRight = (Vector2)Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0, Camera.main.nearClipPlane));
+        var topLeft = (Vector2) Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight));
+        var bottomRight = (Vector2)Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0));
 
         if (transform.position.y < -topLeft.y + radius && direction.y < 0) {
             onDeath.Invoke(this);
         }
         else if (transform.position.y > topLeft.y - radius && direction.y > 0) {
-            direction.y = -direction.y;
+            direction.y *= -1;
         }
-
         if (transform.position.x < -bottomRight.x + radius && direction.x < 0) {
-            direction.x = -direction.x;
+            direction.x *= -1;
         } else if (transform.position.x > bottomRight.x - radius && direction.x > 0) {
-            direction.x = -direction.x;
+            direction.x *= -1;
         }
-      
     }
 
     public void gameStart() {
@@ -107,11 +105,20 @@ public class BallController : MonoBehaviour
     void OnTriggerEnter2D(Collider2D other) {
         if (other.CompareTag("Pad")) {
             direction.y = -direction.y;
-            speed = speed + 1;
+            speed += 1f;
+
+            transform.localScale = transform.localScale + GM.scaleChange;
+            Vector3 scale = transform.localScale;
+            scale.x = Mathf.Min(scale.x, 0.4f);
+            scale.y = Mathf.Min(scale.y, 0.4f);
+            scale.z = Mathf.Min(scale.z, 0.4f);
+
+            transform.localScale = scale;
+
             ballTrail.time += 0.10f;
             speed = Mathf.Clamp(speed, 0, spdLimit);
 
-            GM.setShiftCount(GM.shiftCount+1);
+            GM.setShiftCount(GM.shiftCount+1); //limitar o tamanho
         }
     }
     

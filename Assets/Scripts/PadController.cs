@@ -13,12 +13,11 @@ public class PadController : MonoBehaviour
     public float startSpeed;
 
     Rigidbody2D pad;
-    public GameObject padd;
+    //public GameObject padd;
 
     //limite da tela
     private Vector2 screenBounds;
     private float padW;
-    //private float padH;
 
     //Input System
     PadActions mapControls;
@@ -27,7 +26,6 @@ public class PadController : MonoBehaviour
 
     private void Awake() {
         mapControls = new PadActions();
-        //controls.PadActionMap.Move.performed += ctx => padMove();
     }
 
     void OnEnable() {
@@ -45,7 +43,7 @@ public class PadController : MonoBehaviour
         pad = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
 
-        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
         padW = transform.GetComponent<SpriteRenderer>().bounds.size.x;
     }
 
@@ -64,8 +62,8 @@ public class PadController : MonoBehaviour
                 velocity = 0;
                 acceleration = 0;
             }
-            transform.Translate(Vector2.right * -speed * Time.deltaTime);
-            acceleration = acceleration - speed * Time.deltaTime;
+            //transform.Translate(Vector2.right * -speed * Time.deltaTime);
+            acceleration -= speed * Time.deltaTime;
         }
 
         else if (axisX.x >= 1) {
@@ -73,23 +71,24 @@ public class PadController : MonoBehaviour
                 velocity = 0;
                 acceleration = 0;
             }
-            transform.Translate(Vector2.right * speed * Time.deltaTime);
-            acceleration = acceleration + speed * Time.deltaTime;
+            //transform.Translate(Vector2.right * speed * Time.deltaTime);
+            acceleration += speed * Time.deltaTime;
         } 
         
         else {
             acceleration = 0;
         }
 
-        velocity = velocity + acceleration * Time.deltaTime;
+        velocity += acceleration * Time.deltaTime;
         if (acceleration == 0) {
-            velocity = velocity * airDrag * Time.deltaTime;
+            velocity *= airDrag * Time.deltaTime;
         }
 
         velocity = Mathf.Clamp(velocity, -spdLimit, spdLimit);
 
         transform.Translate(new Vector2(velocity, 0));
 
+        // CHecando o limite da tela
         Vector3 viewPos = transform.position;
         viewPos.x = Mathf.Clamp(viewPos.x, -screenBounds.x + padW / 2, screenBounds.x - padW / 2);
         transform.position = viewPos;
