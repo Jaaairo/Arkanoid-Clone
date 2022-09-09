@@ -121,12 +121,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b626e0ad88f7e72499831d9944831047, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ball: {fileID: 1603780145857215027}
   ballTrail: {fileID: 1603780146006546639}
   speed: 5
   GM: {fileID: 0}
   ballSpeedMulti: 1
-  ballScale: {x: 0.25, y: 0.25, z: -0.25}
 --- !u!61 &1603780145857215030
 BoxCollider2D:
   m_ObjectHideFlags: 0

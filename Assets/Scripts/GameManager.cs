@@ -8,12 +8,10 @@ public class GameManager : MonoBehaviour
 {
 
     [SerializeField] PadController padCTR; //Cria uma variável que acessa a classe PadController.
+    [SerializeField] AudioManager AM; //Cria uma variável que acessa a classe PadController.
     [SerializeField] BallController ballPrefab; //Cria uma variável que armazena o prefab da bola para podermos ter mais opções de uso do game object
-    [SerializeField] TextMeshPro countTxt; //Variável usada para acessar o texto do counter
     [SerializeField] TextMeshPro shiftTxt; //Variável usada para acessar o texto do shift time.
-
-    float counter; //Variável com o valor do counter
-    bool resetPadPos; //Variável booleana determina se a posição do pad vai ser resetada
+    [SerializeField] CountManager CountManager;
 
     List<BallController> ballControllers = new List<BallController>(); //Lista utilizada para contar quantas bolinhas tem na tela
 
@@ -21,11 +19,14 @@ public class GameManager : MonoBehaviour
 
     public int shiftCount; //Variável usada para armazenar o número de colisões entre as bolinhas e o pad
 
-    public Vector3 scaleChange = new Vector3(0.005f, 0.005f, 0.005f); 
+    public Vector3 scaleChange = new Vector3(0.005f, 0.005f, 0.005f);
+
+    bool gameIsRunning;
 
     private void Awake() {
         mapControls = new PadActions(); //Armazena o mapa de ações
         setShiftCount(0); //Inicia o jogo com a contagem de colisões em zero
+        restartScene();
     }
 
     private void OnEnable() {
@@ -42,32 +43,22 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         //Se o número de ballControllers (bolas instanciadas) chegar a zero a função updateCounter é chamada
-        if (ballControllers.Count==0){
-            updateCounter();
-            if (!resetPadPos) { //Se resetPadPos for falsa...
-                padCTR.resetPosition(); //Chama o método resetPosition na classe padController
-                resetPadPos = true; //Muda o estado da variável para verdadeiro
-                padCTR.padSpeed(0.5f); //chama o método padSpeed na classe padController e passa o valor determinado
-            }
+        if (ballControllers.Count==0 && gameIsRunning==true){
+            restartScene();
         }
 
-        if (counter > 3) { //Enquanto o valor de canter for menor que três
-            counter = 0; //Zera a varável
+        if (CountManager.isCounterFinished && gameIsRunning == false) { //Enquanto o valor de couter for menor que três
             gameStart(); //Chama o método gameStart
         }
     }
 
-    private void updateCounter() {
-        counter = counter + Time.deltaTime;
-        int txtInt = 3 - (int)counter;
-        countTxt.text = txtInt.ToString();
-    }
+
 
     void gameStart() {
-        countTxt.text = "";
         padCTR.resetSpeed();
-        resetPadPos = false;
         ballInstance();
+        AM.Play("gameStart");
+        gameIsRunning = true;
     }
 
     //Método para criar bolas na tela
@@ -86,6 +77,7 @@ public class GameManager : MonoBehaviour
         Destroy(ball.gameObject);
         if (ballControllers.Count == 0) {
             setShiftCount(0);
+            AM.Play("gameOver");
         }
     }
 
@@ -106,7 +98,7 @@ public class GameManager : MonoBehaviour
         if (shiftCount > 0) {
             foreach (BallController ball in ballControllers) {       
                 ball.ballSpeedMulti = 0.5f;
-                padCTR.speed *= 0.8f;
+                padCTR.shiftSpeed = 0.8f;
             }
             setShiftCount(shiftCount-1); //Reduzir por segundos se botão permanecer pressionado
         }
@@ -116,7 +108,18 @@ public class GameManager : MonoBehaviour
         foreach (BallController ball in ballControllers) {
             ball.ballSpeedMulti = 1;
         }
-        padCTR.resetSpeed();
+        padCTR.shiftSpeed = 1;
+    }
+
+    void restartScene() {
+        padCTR.resetPosition(); //Chama o método resetPosition na classe padController
+        padCTR.padSpeed(0.5f); //chama o método padSpeed na classe padController e passa o valor determinado
+        CountManager.startCounter(); 
+        gameIsRunning = false;
+    }
+
+    public void playSound(string name) {
+        AM.Play(name);
     }
 
 

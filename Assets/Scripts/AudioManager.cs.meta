@@ -1,0 +1,13 @@
+fileFormatVersion: 2
+guid: 298458cf99cfb0246bd46da39fbd6056
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - counterClip: {fileID: 8300000, guid: 411379408fa591a44ba6e22a11a91a83, type: 3}
+  - audioSource: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

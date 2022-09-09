@@ -5,12 +5,14 @@ using UnityEngine.InputSystem;
 
 public class PadController : MonoBehaviour
 {
-    public float speed;
+    private float speed;
     public float airDrag = 0.5f;
     public float spdLimit = 75f;
     private float acceleration;
     private float velocity;
     public float startSpeed;
+    public float shiftSpeed=1;
+    public float finalPadSpeed => speed * shiftSpeed;
 
     Rigidbody2D pad;
     //public GameObject padd;
@@ -39,7 +41,6 @@ public class PadController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        startSpeed = speed;
         pad = GetComponent<Rigidbody2D>();
         startPosition = transform.position;
 
@@ -63,7 +64,7 @@ public class PadController : MonoBehaviour
                 acceleration = 0;
             }
             //transform.Translate(Vector2.right * -speed * Time.deltaTime);
-            acceleration -= speed * Time.deltaTime;
+            acceleration -= finalPadSpeed * Time.deltaTime;
         }
 
         else if (axisX.x >= 1) {
@@ -72,7 +73,7 @@ public class PadController : MonoBehaviour
                 acceleration = 0;
             }
             //transform.Translate(Vector2.right * speed * Time.deltaTime);
-            acceleration += speed * Time.deltaTime;
+            acceleration += finalPadSpeed * Time.deltaTime;
         } 
         
         else {
@@ -100,6 +101,7 @@ public class PadController : MonoBehaviour
 
     public void resetSpeed() {
         speed = startSpeed;
+        shiftSpeed = 1;
     }
 
     public void resetPosition() {

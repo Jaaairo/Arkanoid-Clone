@@ -29,10 +29,10 @@ public class BallController : MonoBehaviour
 
     public float ballSpeedMulti=1;
 
+
     // Start is called before the first frame update
     void Start()
     {
-
         startPosition = transform.position;
         startSpd = speed;
 
@@ -43,7 +43,7 @@ public class BallController : MonoBehaviour
         ballH = transform.GetComponent<SpriteRenderer>().bounds.size.y;
         
         gameStart();
-
+       
     }
 
     // Update is called once per frame
@@ -66,14 +66,18 @@ public class BallController : MonoBehaviour
 
         if (transform.position.y < -topLeft.y + radius && direction.y < 0) {
             onDeath.Invoke(this);
+            GM.playSound("ballExplode");
         }
         else if (transform.position.y > topLeft.y - radius && direction.y > 0) {
             direction.y *= -1;
+            GM.playSound("wallHit");
         }
         if (transform.position.x < -bottomRight.x + radius && direction.x < 0) {
             direction.x *= -1;
+            GM.playSound("wallHit");
         } else if (transform.position.x > bottomRight.x - radius && direction.x > 0) {
             direction.x *= -1;
+            GM.playSound("wallHit");
         }
     }
 
@@ -119,6 +123,7 @@ public class BallController : MonoBehaviour
             speed = Mathf.Clamp(speed, 0, spdLimit);
 
             GM.setShiftCount(GM.shiftCount+1); //limitar o tamanho
+            GM.playSound("padHit");
         }
     }
     
