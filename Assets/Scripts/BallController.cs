@@ -107,9 +107,15 @@ public class BallController : MonoBehaviour
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if (other.CompareTag("Pad")) {
+        if (other.TryGetComponent(out PadController pad)) {
             direction.y = -direction.y;
             speed += 1f;
+            direction.x = transform.position.x - pad.transform.position.x;
+            //direction.Normalize();
+            direction.x += pad.padVelocity;
+            direction.x = Mathf.Clamp(direction.x, -1.5f, 1.5f);
+
+            //direction.Normalize(); // Normaliza o vetor para deixar no tamanho mãximo de 1
 
             transform.localScale = transform.localScale + GM.scaleChange;
             Vector3 scale = transform.localScale;

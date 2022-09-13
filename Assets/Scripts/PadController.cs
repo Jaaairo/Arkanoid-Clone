@@ -13,6 +13,7 @@ public class PadController : MonoBehaviour
     public float startSpeed;
     public float shiftSpeed=1;
     public float finalPadSpeed => speed * shiftSpeed;
+    public float padVelocity => velocity;
 
     Rigidbody2D pad;
     //public GameObject padd;
@@ -64,7 +65,7 @@ public class PadController : MonoBehaviour
                 acceleration = 0;
             }
             //transform.Translate(Vector2.right * -speed * Time.deltaTime);
-            acceleration -= finalPadSpeed * Time.deltaTime;
+            acceleration = -finalPadSpeed;
         }
 
         else if (axisX.x >= 1) {
@@ -73,7 +74,7 @@ public class PadController : MonoBehaviour
                 acceleration = 0;
             }
             //transform.Translate(Vector2.right * speed * Time.deltaTime);
-            acceleration += finalPadSpeed * Time.deltaTime;
+            acceleration = finalPadSpeed;
         } 
         
         else {
@@ -82,14 +83,14 @@ public class PadController : MonoBehaviour
 
         velocity += acceleration * Time.deltaTime;
         if (acceleration == 0) {
-            velocity *= airDrag * Time.deltaTime;
+            velocity *= 1 - airDrag * Time.deltaTime;
         }
 
         velocity = Mathf.Clamp(velocity, -spdLimit, spdLimit);
 
         transform.Translate(new Vector2(velocity, 0));
 
-        // CHecando o limite da tela
+        // Checando o limite da tela
         Vector3 viewPos = transform.position;
         viewPos.x = Mathf.Clamp(viewPos.x, -screenBounds.x + padW / 2, screenBounds.x - padW / 2);
         transform.position = viewPos;
@@ -111,4 +112,5 @@ public class PadController : MonoBehaviour
             transform.position = startPosition;
         }
     }
+
 }

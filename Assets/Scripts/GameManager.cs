@@ -23,6 +23,9 @@ public class GameManager : MonoBehaviour
 
     bool gameIsRunning;
 
+    bool isShift;
+    float shiftTimer;
+
     private void Awake() {
         mapControls = new PadActions(); //Armazena o mapa de ações
         setShiftCount(0); //Inicia o jogo com a contagem de colisões em zero
@@ -50,6 +53,8 @@ public class GameManager : MonoBehaviour
         if (CountManager.isCounterFinished && gameIsRunning == false) { //Enquanto o valor de couter for menor que três
             gameStart(); //Chama o método gameStart
         }
+
+        shiftCountReduce();
     }
 
 
@@ -83,14 +88,17 @@ public class GameManager : MonoBehaviour
 
     public void setShiftCount(int hitCount) {
 
+        int startShiftCount = shiftCount;
+
         shiftCount = Mathf.Max(hitCount, 0); // Max escolhe o valor mais alto entre hitCount e zero.
         shiftTxt.text = shiftCount.ToString();
 
         shiftTxt.gameObject.SetActive(shiftCount > 0);
 
-        if (shiftCount == 5) {
+        if (shiftCount % 5 == 0 && shiftCount > 0 && shiftCount > startShiftCount) {
             ballInstance();
         }
+
     }
 
 
@@ -100,15 +108,20 @@ public class GameManager : MonoBehaviour
                 ball.ballSpeedMulti = 0.5f;
                 padCTR.shiftSpeed = 0.8f;
             }
-            setShiftCount(shiftCount-1); //Reduzir por segundos se botão permanecer pressionado
+            isShift = true;           
+            //setShiftCount(shiftCount-1); //Reduzir por segundos se botão permanecer pressionado
         }
     }
 
     void resetSpeed(InputAction.CallbackContext ctx) {
+        resetSpeed();
+    }
+    void resetSpeed() {
         foreach (BallController ball in ballControllers) {
             ball.ballSpeedMulti = 1;
         }
         padCTR.shiftSpeed = 1;
+        isShift = false;
     }
 
     void restartScene() {
@@ -122,5 +135,19 @@ public class GameManager : MonoBehaviour
         AM.Play(name);
     }
 
+    void shiftCountReduce() {
+        if(isShift == true) {
+            shiftTimer += Time.deltaTime;
+            if(shiftTimer >= 1) {
+                setShiftCount(shiftCount - 1);
+                shiftTimer = 0;
+                if(shiftCount == 0) {
+                    resetSpeed();
+                }
+            }
+        } else {
+            shiftTimer = 0;
+        }
+    }
 
 }
