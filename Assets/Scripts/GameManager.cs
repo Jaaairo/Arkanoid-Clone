@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] BallController ballPrefab; //Cria uma variável que armazena o prefab da bola para podermos ter mais opções de uso do game object
     [SerializeField] TextMeshPro shiftTxt; //Variável usada para acessar o texto do shift time.
     [SerializeField] CountManager CountManager;
+    [SerializeField] CameraManager camManager;
 
     List<BallController> ballControllers = new List<BallController>(); //Lista utilizada para contar quantas bolinhas tem na tela
 
@@ -26,7 +27,12 @@ public class GameManager : MonoBehaviour
     bool isShift;
     float shiftTimer;
 
+    public float updateShakeAmount;
+
+    float padSpeed;
+
     private void Awake() {
+        padSpeed = padCTR.speed;
         mapControls = new PadActions(); //Armazena o mapa de ações
         setShiftCount(0); //Inicia o jogo com a contagem de colisões em zero
         restartScene();
@@ -47,6 +53,7 @@ public class GameManager : MonoBehaviour
     {
         //Se o número de ballControllers (bolas instanciadas) chegar a zero a função updateCounter é chamada
         if (ballControllers.Count==0 && gameIsRunning==true){
+            padSpeed = 0;
             restartScene();
         }
 
@@ -55,6 +62,8 @@ public class GameManager : MonoBehaviour
         }
 
         shiftCountReduce();
+
+;        //updateShakeAmount = 0.1f;
     }
 
 
@@ -72,6 +81,8 @@ public class GameManager : MonoBehaviour
         ballControllers.Add(ballInstance); //adiciona uma instância na lista
 
         ballInstance.GM = this; //Adiciona uma cópia do game manager a essa (this) instância. A variável GM está sendo usada na checagem de colisão na classe BallController
+        
+        ballInstance.GM.updateShakeAmount = ballInstance.speed;
 
         ballInstance.onDeath += destroyBall; //onDeath está sendo chamado da classe BallController mas não entendi direito o que é
     }
@@ -100,7 +111,6 @@ public class GameManager : MonoBehaviour
         }
 
     }
-
 
     void addSpeed(InputAction.CallbackContext ctx) {
         if (shiftCount > 0) {
@@ -133,6 +143,10 @@ public class GameManager : MonoBehaviour
 
     public void playSound(string name) {
         AM.Play(name);
+    }
+
+    public void camShake(float addShakeAmount) {
+        camManager.ShakeCamera(addShakeAmount);
     }
 
     void shiftCountReduce() {

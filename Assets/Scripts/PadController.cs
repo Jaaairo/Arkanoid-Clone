@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 
 public class PadController : MonoBehaviour
 {
-    private float speed;
+    public float speed;
     public float airDrag = 0.5f;
     public float spdLimit = 75f;
     private float acceleration;
@@ -16,7 +16,7 @@ public class PadController : MonoBehaviour
     public float padVelocity => velocity;
 
     Rigidbody2D pad;
-    //public GameObject padd;
+    //public GameObject pad;
 
     //limite da tela
     private Vector2 screenBounds;

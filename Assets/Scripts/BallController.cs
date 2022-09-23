@@ -25,6 +25,8 @@ public class BallController : MonoBehaviour
     float spdLimit = 15f;
     Vector3 startPosition;
 
+    public float camShakeVelocitcy => speed * 0.02f;
+
     public GameManager GM;
 
     public float ballSpeedMulti=1;
@@ -56,26 +58,30 @@ public class BallController : MonoBehaviour
 
         transform.Translate(direction * FinalSpeed * Time.deltaTime);
 
-        ballBounce();     
+        ballBounce();
+
     }
 
     private void ballBounce() {
-
         var topLeft = (Vector2) Camera.main.ScreenToWorldPoint(new Vector3(0, Camera.main.pixelHeight));
         var bottomRight = (Vector2)Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0));
 
         if (transform.position.y < -topLeft.y + radius && direction.y < 0) {
+            GM.camShake(camShakeVelocitcy);
             onDeath.Invoke(this);
             GM.playSound("ballExplode");
         }
         else if (transform.position.y > topLeft.y - radius && direction.y > 0) {
+            GM.camShake(camShakeVelocitcy);
             direction.y *= -1;
             GM.playSound("wallHit");
         }
         if (transform.position.x < -bottomRight.x + radius && direction.x < 0) {
+            GM.camShake(camShakeVelocitcy);
             direction.x *= -1;
             GM.playSound("wallHit");
         } else if (transform.position.x > bottomRight.x - radius && direction.x > 0) {
+            GM.camShake(camShakeVelocitcy);
             direction.x *= -1;
             GM.playSound("wallHit");
         }
@@ -115,7 +121,7 @@ public class BallController : MonoBehaviour
             direction.x += pad.padVelocity;
             direction.x = Mathf.Clamp(direction.x, -1.5f, 1.5f);
 
-            //direction.Normalize(); // Normaliza o vetor para deixar no tamanho mãximo de 1
+            //direction.Normalize(); // Normaliza o vetor para deixar no tamanho maximo de 1
 
             transform.localScale = transform.localScale + GM.scaleChange;
             Vector3 scale = transform.localScale;
@@ -130,6 +136,7 @@ public class BallController : MonoBehaviour
 
             GM.setShiftCount(GM.shiftCount+1); //limitar o tamanho
             GM.playSound("padHit");
+            GM.camShake(camShakeVelocitcy);
         }
     }
     

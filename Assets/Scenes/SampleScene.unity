@@ -211,6 +211,8 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420033}
+  - component: {fileID: 519420035}
+  - component: {fileID: 519420036}
   m_Layer: 6
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -225,7 +227,7 @@ AudioListener:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
+  m_Enabled: 0
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -344,6 +346,37 @@ MonoBehaviour:
   m_BeforeTransparentBundles: []
   m_BeforeStackBundles: []
   m_AfterStackBundles: []
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e741851cba3ad425c91ecf922cc6b379, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _data:
+    _json: '{"declarations":{"Kind":"Object","collection":{"$content":[],"$version":"A"},"$version":"A"}}'
+    _objectReferences: []
+--- !u!114 &519420036
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d64420993e18044281915c8ec715cbd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraTransform: {fileID: 519420032}
+  shakeDuration: 0.15
+  shakeAmount: 0.05
+  updateShakeAmount: 0
 --- !u!1 &744537572
 GameObject:
   m_ObjectHideFlags: 0
@@ -379,8 +412,10 @@ MonoBehaviour:
   ballPrefab: {fileID: 1603780145857215026, guid: c47483b7a573acf458bb272520bf6513, type: 3}
   shiftTxt: {fileID: 1682090813}
   CountManager: {fileID: 744537575}
+  camManager: {fileID: 519420036}
   shiftCount: 0
   scaleChange: {x: 0.005, y: 0.005, z: 0.005}
+  updateShakeAmount: 0
 --- !u!4 &744537574
 Transform:
   m_ObjectHideFlags: 0
@@ -1059,9 +1094,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e199e0de631e95040be109d91ac15a56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  airDrag: 16
+  speed: 0
+  airDrag: 25
   spdLimit: 0.2
-  startSpeed: 5
+  startSpeed: 2
   shiftSpeed: 1
 --- !u!50 &1779339076
 Rigidbody2D:
@@ -1077,7 +1113,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.1
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
