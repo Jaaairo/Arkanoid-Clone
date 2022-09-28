@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] AudioManager AM; //Cria uma variável que acessa a classe PadController.
     [SerializeField] BallController ballPrefab; //Cria uma variável que armazena o prefab da bola para podermos ter mais opções de uso do game object
     [SerializeField] TextMeshPro shiftTxt; //Variável usada para acessar o texto do shift time.
+    [SerializeField] TextMeshPro shiftTxtBG;
     [SerializeField] CountManager CountManager;
     [SerializeField] CameraManager camManager;
 
@@ -23,12 +24,9 @@ public class GameManager : MonoBehaviour
     public Vector3 scaleChange = new Vector3(0.005f, 0.005f, 0.005f);
 
     bool gameIsRunning;
-
     bool isShift;
     float shiftTimer;
-
     public float updateShakeAmount;
-
     float padSpeed;
 
     private void Awake() {
@@ -63,7 +61,9 @@ public class GameManager : MonoBehaviour
 
         shiftCountReduce();
 
-;        //updateShakeAmount = 0.1f;
+        if(isShift == true) {
+            gravityPull();
+        }
     }
 
 
@@ -103,6 +103,7 @@ public class GameManager : MonoBehaviour
 
         shiftCount = Mathf.Max(hitCount, 0); // Max escolhe o valor mais alto entre hitCount e zero.
         shiftTxt.text = shiftCount.ToString();
+        shiftTxtBG.text = "";
 
         shiftTxt.gameObject.SetActive(shiftCount > 0);
 
@@ -110,6 +111,9 @@ public class GameManager : MonoBehaviour
             ballInstance();
         }
 
+        for (int i = 0; i < shiftTxt.text.Length; i++) { //O for tem três partes = Inicialização / condição / Incrementação - Lenght é o comprimento (numero de caracteres) da string
+            shiftTxtBG.text += "0"; // i = 0 conteudo = "" texto = "0" // i = 1 conteudo = "0" texto = "00"
+        }
     }
 
     void addSpeed(InputAction.CallbackContext ctx) {
@@ -119,7 +123,6 @@ public class GameManager : MonoBehaviour
                 padCTR.shiftSpeed = 0.8f;
             }
             isShift = true;           
-            //setShiftCount(shiftCount-1); //Reduzir por segundos se botão permanecer pressionado
         }
     }
 
@@ -151,7 +154,8 @@ public class GameManager : MonoBehaviour
 
     void shiftCountReduce() {
         if(isShift == true) {
-            shiftTimer += Time.deltaTime;
+            camManager.ShakeCamera(0.02f);
+            shiftTimer += Time.deltaTime*1.5f;
             if(shiftTimer >= 1) {
                 setShiftCount(shiftCount - 1);
                 shiftTimer = 0;
@@ -161,6 +165,17 @@ public class GameManager : MonoBehaviour
             }
         } else {
             shiftTimer = 0;
+        }
+    }
+
+    void gravityPull() {
+        foreach (BallController ball in ballControllers) {
+            if(ball.direction.y < 0) {
+                Vector3 targetDir = ball.transform.position - padCTR.transform.position;
+                //ball.transform.position = ball.transform.position - targetDir * 2f * Time.deltaTime;
+                ball.direction = ball.direction - (Vector2) targetDir * 1f * Time.deltaTime;
+                ball.direction.Normalize();
+            }
         }
     }
 

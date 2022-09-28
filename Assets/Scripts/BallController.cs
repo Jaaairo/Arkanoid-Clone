@@ -19,13 +19,13 @@ public class BallController : MonoBehaviour
 
     public float FinalSpeed=>speed * ballSpeedMulti; //Atributo, quando chamado faz o cálculo e retorna o valor
     public float speed = 5f;
-    Vector2 direction;
+    public Vector2 direction;
     float radius;
     float startSpd ;
     float spdLimit = 15f;
     Vector3 startPosition;
 
-    public float camShakeVelocitcy => speed * 0.02f;
+    public float camShakeVelocity => speed * 0.02f;
 
     public GameManager GM;
 
@@ -67,21 +67,21 @@ public class BallController : MonoBehaviour
         var bottomRight = (Vector2)Camera.main.ScreenToWorldPoint(new Vector3(Camera.main.pixelWidth, 0));
 
         if (transform.position.y < -topLeft.y + radius && direction.y < 0) {
-            GM.camShake(camShakeVelocitcy);
+            GM.camShake(camShakeVelocity);
             onDeath.Invoke(this);
             GM.playSound("ballExplode");
         }
         else if (transform.position.y > topLeft.y - radius && direction.y > 0) {
-            GM.camShake(camShakeVelocitcy);
+            GM.camShake(camShakeVelocity);
             direction.y *= -1;
             GM.playSound("wallHit");
         }
         if (transform.position.x < -bottomRight.x + radius && direction.x < 0) {
-            GM.camShake(camShakeVelocitcy);
+            GM.camShake(camShakeVelocity);
             direction.x *= -1;
             GM.playSound("wallHit");
         } else if (transform.position.x > bottomRight.x - radius && direction.x > 0) {
-            GM.camShake(camShakeVelocitcy);
+            GM.camShake(camShakeVelocity);
             direction.x *= -1;
             GM.playSound("wallHit");
         }
@@ -136,8 +136,19 @@ public class BallController : MonoBehaviour
 
             GM.setShiftCount(GM.shiftCount+1); //limitar o tamanho
             GM.playSound("padHit");
-            GM.camShake(camShakeVelocitcy);
+            GM.camShake(camShakeVelocity);
+        }else if (other.TryGetComponent(out Block block)) {
+            block.damage();
+            GM.playSound("padHit");
+            GM.camShake(camShakeVelocity);
+            direction.y = -direction.y;
+            speed += 1f;
+            ballTrail.time += 0.10f;
+            speed = Mathf.Clamp(speed, 0, spdLimit);
         }
+        
+
+
     }
     
 
