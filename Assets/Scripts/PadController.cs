@@ -46,6 +46,7 @@ public class PadController : MonoBehaviour
         startPosition = transform.position;
 
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+
         padW = transform.GetComponent<SpriteRenderer>().bounds.size.x;
     }
 

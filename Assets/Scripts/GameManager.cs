@@ -14,6 +14,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshPro shiftTxtBG;
     [SerializeField] CountManager CountManager;
     [SerializeField] CameraManager camManager;
+    [SerializeField] BlockManager blockManager;
+
+    [SerializeField] AnimationCurve shiftLevel = AnimationCurve.Linear(0,0,1,1);
 
     List<BallController> ballControllers = new List<BallController>(); //Lista utilizada para contar quantas bolinhas tem na tela
 
@@ -29,11 +32,15 @@ public class GameManager : MonoBehaviour
     public float updateShakeAmount;
     float padSpeed;
 
+    int hitCount;
+    int ballInstaceCount;
+
     private void Awake() {
         padSpeed = padCTR.speed;
         mapControls = new PadActions(); //Armazena o mapa de ações
         setShiftCount(0); //Inicia o jogo com a contagem de colisões em zero
         restartScene();
+        blockManager.spawnBlocks();
     }
 
     private void OnEnable() {
@@ -92,9 +99,15 @@ public class GameManager : MonoBehaviour
         ballControllers.Remove(ball);
         Destroy(ball.gameObject);
         if (ballControllers.Count == 0) {
-            setShiftCount(0);
-            AM.Play("gameOver");
+            gameOver();
         }
+    }
+
+    private void gameOver() {
+        setShiftCount(0);
+        hitCount = 0;
+        ballInstaceCount = 0;
+        AM.Play("gameOver");
     }
 
     public void setShiftCount(int hitCount) {
@@ -106,10 +119,6 @@ public class GameManager : MonoBehaviour
         shiftTxtBG.text = "";
 
         shiftTxt.gameObject.SetActive(shiftCount > 0);
-
-        if (shiftCount % 5 == 0 && shiftCount > 0 && shiftCount > startShiftCount) {
-            ballInstance();
-        }
 
         for (int i = 0; i < shiftTxt.text.Length; i++) { //O for tem três partes = Inicialização / condição / Incrementação - Lenght é o comprimento (numero de caracteres) da string
             shiftTxtBG.text += "0"; // i = 0 conteudo = "" texto = "0" // i = 1 conteudo = "0" texto = "00"
@@ -172,10 +181,19 @@ public class GameManager : MonoBehaviour
         foreach (BallController ball in ballControllers) {
             if(ball.direction.y < 0) {
                 Vector3 targetDir = ball.transform.position - padCTR.transform.position;
-                //ball.transform.position = ball.transform.position - targetDir * 2f * Time.deltaTime;
                 ball.direction = ball.direction - (Vector2) targetDir * 1f * Time.deltaTime;
                 ball.direction.Normalize();
             }
+        }
+    }
+
+    public void addHit() {
+        setShiftCount(shiftCount + 1);
+        hitCount++;
+
+        if (hitCount % Mathf.RoundToInt(shiftLevel.Evaluate(ballInstaceCount)) == 0) {
+            ballInstance();
+            ballInstaceCount++;
         }
     }
 

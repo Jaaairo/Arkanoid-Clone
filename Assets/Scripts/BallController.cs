@@ -134,7 +134,8 @@ public class BallController : MonoBehaviour
             ballTrail.time += 0.10f;
             speed = Mathf.Clamp(speed, 0, spdLimit);
 
-            GM.setShiftCount(GM.shiftCount+1); //limitar o tamanho
+
+            GM.addHit();
             GM.playSound("padHit");
             GM.camShake(camShakeVelocity);
         }else if (other.TryGetComponent(out Block block)) {
@@ -142,12 +143,9 @@ public class BallController : MonoBehaviour
             GM.playSound("padHit");
             GM.camShake(camShakeVelocity);
             direction.y = -direction.y;
-            speed += 1f;
-            ballTrail.time += 0.10f;
-            speed = Mathf.Clamp(speed, 0, spdLimit);
         }
         
-
+        
 
     }
     
