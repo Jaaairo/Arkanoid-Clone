@@ -15,6 +15,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] CountManager CountManager;
     [SerializeField] CameraManager camManager;
     [SerializeField] BlockManager blockManager;
+    [SerializeField] ProgressBar progressBarCTR;
 
     [SerializeField] AnimationCurve shiftLevel = AnimationCurve.Linear(0,0,1,1);
 
@@ -71,6 +72,12 @@ public class GameManager : MonoBehaviour
         if(isShift == true) {
             gravityPull();
         }
+
+        if (gameIsRunning && progressBarCTR.isProgressBarFinished()) {
+            destroyAllBalls();
+        }
+
+
     }
 
 
@@ -80,6 +87,7 @@ public class GameManager : MonoBehaviour
         ballInstance();
         AM.Play("gameStart");
         gameIsRunning = true;
+        progressBarCTR.startTimer();
     }
 
     //Método para criar bolas na tela
@@ -108,6 +116,12 @@ public class GameManager : MonoBehaviour
         hitCount = 0;
         ballInstaceCount = 0;
         AM.Play("gameOver");
+    }
+
+    void destroyAllBalls() {
+        for (int i = ballControllers.Count - 1; i >= 0; i--) {
+            destroyBall(ballControllers[i]);                    
+        }
     }
 
     public void setShiftCount(int hitCount) {

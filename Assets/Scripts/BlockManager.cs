@@ -14,7 +14,7 @@ public class BlockManager : MonoBehaviour
 
 
     public void spawnBlocks() {
-        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height));
+        screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height - 100f));
         
         float screenWidth = screenBounds.x * 2;
 

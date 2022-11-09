@@ -10,7 +10,7 @@ public class Block : MonoBehaviour
     List<Color> colors = new List<Color>() { };
 
     public SpriteRenderer blockColor;
-    int colorIndex = 3;
+    //int colorIndex = 3;
 
     void Start() {
         ColorUtility.TryParseHtmlString("#165e16", out color1);

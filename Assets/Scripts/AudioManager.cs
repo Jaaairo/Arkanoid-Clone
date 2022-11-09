@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine.Audio;
 using System;
 using UnityEngine;
-
+[DefaultExecutionOrder(-1)] //força esse script a carregar antes de todo mundo a não ser que algém tenha um número menor
 public class AudioManager : MonoBehaviour
 {
 

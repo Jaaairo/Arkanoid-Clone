@@ -134,7 +134,6 @@ public class BallController : MonoBehaviour
             ballTrail.time += 0.10f;
             speed = Mathf.Clamp(speed, 0, spdLimit);
 
-
             GM.addHit();
             GM.playSound("padHit");
             GM.camShake(camShakeVelocity);
