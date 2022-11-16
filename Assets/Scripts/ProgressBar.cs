@@ -13,6 +13,7 @@ public class ProgressBar : MonoBehaviour
 
     float barSizeMax;
     bool isTimerEnabled;
+    bool isTimerFinished;
 
     float timer;
         
@@ -53,5 +54,12 @@ public class ProgressBar : MonoBehaviour
 
     public bool isProgressBarFinished() {
         return timer >= maxTime;
+    }
+
+    public void resetProgressBar() {
+        percentageCount.text = 0 + "%";
+        bar.localScale = new Vector3(0, bar.localScale.y, bar.localScale.z);
+        timer = 0;
+        isTimerEnabled = false;
     }
 }

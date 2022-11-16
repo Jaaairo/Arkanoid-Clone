@@ -30,7 +30,7 @@ public class Block : MonoBehaviour
 
     public void damage() {      
         life--;
-        //colorIndex--;
+        life = Mathf.Max(0, life); // O valor máximo é life ou zero, max retorna o maior valor
         blockColor.color = colors[life];
 
         if (life <= 0) {

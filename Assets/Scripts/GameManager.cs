@@ -28,6 +28,7 @@ public class GameManager : MonoBehaviour
     public Vector3 scaleChange = new Vector3(0.005f, 0.005f, 0.005f);
 
     bool gameIsRunning;
+    bool gameInitialized;
     bool isShift;
     float shiftTimer;
     public float updateShakeAmount;
@@ -64,7 +65,7 @@ public class GameManager : MonoBehaviour
         }
 
         if (CountManager.isCounterFinished && gameIsRunning == false) { //Enquanto o valor de couter for menor que três
-            gameStart(); //Chama o método gameStart
+            gameReset(); //Chama o método gameStart
         }
 
         shiftCountReduce();
@@ -73,21 +74,36 @@ public class GameManager : MonoBehaviour
             gravityPull();
         }
 
-        if (gameIsRunning && progressBarCTR.isProgressBarFinished()) {
-            destroyAllBalls();
+        if (gameInitialized && progressBarCTR.isProgressBarFinished()) {
+            if (gameIsRunning) {
+                destroyAllBalls();
+            }
+            gameOver();
         }
-
-
     }
 
 
-
-    void gameStart() {
+    //Método que inicia o jogo 
+    void gameReset() {
         padCTR.resetSpeed();
         ballInstance();
         AM.Play("gameStart");
         gameIsRunning = true;
+
+        if (!gameInitialized) {
+            gameStart();
+        }
+    }
+
+    void gameStart() {
         progressBarCTR.startTimer();
+        blockManager.spawnBlocks();
+        gameInitialized = true;
+    }
+
+    void gameOver() {
+        gameInitialized = false;
+        progressBarCTR.resetProgressBar();
     }
 
     //Método para criar bolas na tela
@@ -107,23 +123,26 @@ public class GameManager : MonoBehaviour
         ballControllers.Remove(ball);
         Destroy(ball.gameObject);
         if (ballControllers.Count == 0) {
-            gameOver();
+            ballsEnded();
         }
     }
 
-    private void gameOver() {
+    //Método que reseta o jogo
+    private void ballsEnded() {
         setShiftCount(0);
         hitCount = 0;
         ballInstaceCount = 0;
         AM.Play("gameOver");
     }
 
+    //Método que termina o jogo se a barra de progresso chega ao fim 
     void destroyAllBalls() {
         for (int i = ballControllers.Count - 1; i >= 0; i--) {
             destroyBall(ballControllers[i]);                    
         }
     }
 
+    //Mètodo que ativa o Shift Time
     public void setShiftCount(int hitCount) {
 
         int startShiftCount = shiftCount;
@@ -139,6 +158,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    //Método que aumenta a velocidade das bolas
     void addSpeed(InputAction.CallbackContext ctx) {
         if (shiftCount > 0) {
             foreach (BallController ball in ballControllers) {       

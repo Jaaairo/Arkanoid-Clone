@@ -9,11 +9,15 @@ public class BlockManager : MonoBehaviour
     float spaceBetweenBlocks = 0.25f;
     float spaceBetweenRows = 0.1f;
 
+    List<Block> instancedBlocks = new List<Block>();
+
     [Min(1)]public int blockCols; //propriedade da variável utilizada pelo editor da Unity
     [Min(1)]public int blockRows;
 
 
     public void spawnBlocks() {
+        destroyAllBlocks();
+
         screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height - 100f));
         
         float screenWidth = screenBounds.x * 2;
@@ -29,15 +33,25 @@ public class BlockManager : MonoBehaviour
 
                 Block blockInstance = Instantiate(blockPrefab, blockPos, Quaternion.identity);
 
+                instancedBlocks.Add(blockInstance);
+
                 Vector3 blockScale = blockInstance.transform.localScale;
 
                 blockScale.x = blockWidth;
 
-                blockInstance.transform.localScale = blockScale;
-         
+                blockInstance.transform.localScale = blockScale; 
             }
 
         }
 
+    }
+
+    void destroyAllBlocks() {
+        foreach (var item in instancedBlocks) {
+            if (item) {
+                Destroy(item.gameObject);
+            }         
+        }
+        instancedBlocks.Clear();
     }
 }

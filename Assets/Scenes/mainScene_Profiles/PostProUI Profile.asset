@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-5071206777422112793
+--- !u!114 &-817814017988829969
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -17,16 +17,31 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   spectralLut:
-    overrideState: 1
+    overrideState: 0
     value: {fileID: 0}
     defaultState: 1
   intensity:
     overrideState: 1
-    value: 0.02
+    value: 0.43
   fastMode:
-    overrideState: 1
+    overrideState: 0
     value: 0
---- !u!114 &-4170823112846591617
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
+  m_Name: PostProUI Profile
+  m_EditorClassIdentifier: 
+  settings:
+  - {fileID: 663682590978221066}
+  - {fileID: -817814017988829969}
+--- !u!114 &663682590978221066
 MonoBehaviour:
   m_ObjectHideFlags: 3
   m_CorrespondingSourceObject: {fileID: 0}
@@ -44,7 +59,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 2
+    value: 1
   threshold:
     overrideState: 0
     value: 1
@@ -62,7 +77,7 @@ MonoBehaviour:
     value: 0
   color:
     overrideState: 0
-    value: {r: 0, g: 3.2490096, b: 0.5110963, a: 1}
+    value: {r: 0.007843138, g: 0.43529412, b: 0, a: 1}
   fastMode:
     overrideState: 0
     value: 0
@@ -73,18 +88,3 @@ MonoBehaviour:
   dirtIntensity:
     overrideState: 0
     value: 0
---- !u!114 &11400000
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e6292b2c06870d4495f009f912b9600, type: 3}
-  m_Name: postPro Profile
-  m_EditorClassIdentifier: 
-  settings:
-  - {fileID: -4170823112846591617}
-  - {fileID: -5071206777422112793}
